@@ -21,6 +21,29 @@ Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+var Player = function(){
+    this.sprite = 'images/char-horn-girl.png';
+    this.x;
+    this.y;
+}
+
+Player.prototype.update = function(dt){
+
+}
+
+Player.prototype.render = function(){
+    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+}
+
+Player.prototype.handleInput = function(){
+
+}
+
+var allEnemies = [];
+var player = new Player();
+player.x =10;
+player.y =10;
+
 // Now write your own player class
 // This class requires an update(), render() and
 // a handleInput() method.
@@ -41,6 +64,6 @@ document.addEventListener('keyup', function(e) {
         39: 'right',
         40: 'down'
     };
-
+    console.log("key"+e.keyCode);
     player.handleInput(allowedKeys[e.keyCode]);
 });
