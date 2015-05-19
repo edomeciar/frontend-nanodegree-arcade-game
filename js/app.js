@@ -22,27 +22,51 @@ Enemy.prototype.render = function() {
 }
 
 var Player = function(){
-    this.sprite = 'images/char-horn-girl.png';
+    this.sprite = 'images/char-cat-girl.png';
     this.x;
     this.y;
 }
 
-Player.prototype.update = function(dt){
 
+Player.prototype.update = function(dt){
+    if (this.x <= -1 || this.x >= 505 || this.y <= -1 || this.y >= 375) {
+        console.log("x:"+this.x+" y:"+this.y);
+        return false;
+    } else{
+        return true;
+    };
 }
 
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-Player.prototype.handleInput = function(){
+Player.prototype.handleInput = function(pKey){
+    switch(pKey){
+        case 'left':
+            this.x = this.x - 101;
+            break;
+        case 'right':
+            this.x = this.x + 101;
+            break;
+        case 'up':
+            this.y = this.y - 83;
+            break;
+        case 'down':
+            this.y = this.y + 83;
+            break;
+    }
+}
 
+Player.prototype.reset = function(){
+    this.x =202;
+    this.y =374;
 }
 
 var allEnemies = [];
 var player = new Player();
-player.x =10;
-player.y =10;
+player.reset();
+
 
 // Now write your own player class
 // This class requires an update(), render() and

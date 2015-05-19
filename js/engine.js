@@ -94,7 +94,10 @@ var Engine = (function(global) {
         allEnemies.forEach(function(enemy) {
             enemy.update(dt);
         });
-        player.update();
+        if(!player.update()){
+            reset();
+        }
+
     }
 
     /* This function initially draws the "game level", it will then call
@@ -161,6 +164,8 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
+        player.reset();
+        console.log('game reset');
     }
 
     /* Go ahead and load all of the images we know we're going to need to
@@ -172,7 +177,8 @@ var Engine = (function(global) {
         'images/water-block.png',
         'images/grass-block.png',
         'images/enemy-bug.png',
-        'images/char-boy.png'
+        'images/char-boy.png',
+        'images/char-cat-girl.png'
     ]);
     Resources.onReady(init);
 
