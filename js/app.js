@@ -5,6 +5,8 @@ var Enemy = function() {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
+    this.x;
+    this.y;
     this.sprite = 'images/enemy-bug.png';
 }
 
@@ -14,6 +16,8 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
+    //console.log("Enemy x:"+this.x+" y:"+this.y);
+    this.x += Math.floor(dt*70);
 }
 
 // Draw the enemy on the screen, required method for game
@@ -25,16 +29,19 @@ var Player = function(){
     this.sprite = 'images/char-cat-girl.png';
     this.x;
     this.y;
+    this.status;
 }
 
 
 Player.prototype.update = function(dt){
-    if (this.x <= -1 || this.x >= 505 || this.y <= -1 || this.y >= 375) {
-        console.log("x:"+this.x+" y:"+this.y);
+    //console.log("Player x:"+this.x+" y:"+this.y);
+    if (this.x <= -1 || this.x >= 505 || this.y >= 375) {
+        this.status = "lost";
         return false;
-    } else{
-        return true;
-    };
+    } else if(this.y <= 0 ){
+        this.status = "win";
+        return false;
+    }else return true
 }
 
 Player.prototype.render = function(){

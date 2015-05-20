@@ -80,7 +80,18 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
-        // checkCollisions();
+        checkCollisions();
+    }
+
+    function checkCollisions(){
+        allEnemies.forEach(function(enemy) {
+            var diff = player.x - enemy.x;
+            if ((diff > -75 && diff < 75) && enemy.y == player.y) {
+                console.log("diff:"+diff+" e.y:"+enemy.y+" p.y:"+player.y);
+                player.status = "collision";
+                reset();
+            };
+        });
     }
 
     /* This is called by the update function  and loops through all of the
@@ -91,9 +102,26 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
-        allEnemies.forEach(function(enemy) {
+        var timeForAnother = true;
+        allEnemies.forEach(function(enemy,index) {
             enemy.update(dt);
+            if (enemy.x > 101 && Math.random() > 0.98) {
+                timeForAnother = true;
+            }
+            else{
+                timeForAnother = false;
+            };
+            if(enemy.x > 500){
+                allEnemies.splice(index,1);
+            };
         });
+        if (allEnemies.length < 10 && timeForAnother) {
+            var new_enemy = new Enemy();
+            new_enemy.x = 0;
+            new_enemy.y = Math.floor((Math.random() * 3) + 1) * 83 -41;
+            console.log("New enemy starts on "+new_enemy.y);
+            allEnemies.push(new_enemy);
+        };
         if(!player.update()){
             reset();
         }
@@ -164,6 +192,13 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
+        if (player.status == "win") {
+            console.log("WIN");
+        }else if(player.status == "lost"){
+            console.log("LOST");
+        }else if(player.status =="collision"){
+            console.log("LOST because of collision");
+        };
         player.reset();
         console.log('game reset');
     }
