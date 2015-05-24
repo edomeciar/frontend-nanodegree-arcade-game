@@ -35,9 +35,11 @@ var Player = function(){
 
 Player.prototype.update = function(dt){
     //console.log("Player x:"+this.x+" y:"+this.y);
+    //check if player is of screan
     if (this.x <= -1 || this.x >= 505 || this.y >= 375) {
         this.status = "lost";
         return false;
+    //check if player win
     } else if(this.y <= 0 ){
         this.status = "win";
         return false;
@@ -66,6 +68,7 @@ Player.prototype.handleInput = function(pKey){
 }
 
 Player.prototype.reset = function(){
+    //set player to start position.
     this.x =202;
     this.y =374;
 }

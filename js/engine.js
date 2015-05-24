@@ -23,6 +23,9 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        winCounter = 0,
+        lostCounter = 0,
+        infoText = "Game started!",
         lastTime;
 
     canvas.width = 505;
@@ -39,6 +42,11 @@ var Engine = (function(global) {
          * would be the same for everyone (regardless of how fast their
          * computer is) - hurray time!
          */
+        ctx.font="20px Georgia";
+        ctx.textAlign="center";
+        ctx.fillText(infoText,253,100);
+
+
         var now = Date.now(),
             dt = (now - lastTime) / 1000.0;
 
@@ -56,6 +64,8 @@ var Engine = (function(global) {
         /* Use the browser's requestAnimationFrame function to call this
          * function again as soon as the browser is able to draw another frame.
          */
+
+
         win.requestAnimationFrame(main);
     };
 
@@ -102,19 +112,26 @@ var Engine = (function(global) {
      * render methods.
      */
     function updateEntities(dt) {
+        //maximum number of enemies is 10. I use this variable "timeForAnother" to store information
+        //if I have to add another enemy into the canvas
         var timeForAnother = true;
         allEnemies.forEach(function(enemy,index) {
             enemy.update(dt);
+            //in this condition, I am checking distance of latest enemy in canvas.
+            //I want to have some space between enemies.
+            //Plus I am generating random number, to decide if another enemy will be add to canvas
             if (enemy.x > 101 && Math.random() > 0.98) {
                 timeForAnother = true;
             }
             else{
                 timeForAnother = false;
             };
+            //If enemy is of screan/canvas, It's removed from allEnemies
             if(enemy.x > 500){
                 allEnemies.splice(index,1);
             };
         });
+        //I don't want to have more than 10 enemies in screan.
         if (allEnemies.length < 10 && timeForAnother) {
             var new_enemy = new Enemy();
             new_enemy.x = 0;
@@ -122,6 +139,8 @@ var Engine = (function(global) {
             console.log("New enemy starts on "+new_enemy.y);
             allEnemies.push(new_enemy);
         };
+        //player.update function return true/false
+        //if return false, it's time for reset game.
         if(!player.update()){
             reset();
         }
@@ -166,8 +185,17 @@ var Engine = (function(global) {
                 ctx.drawImage(Resources.get(rowImages[row]), col * 101, row * 83);
             }
         }
-
-
+        //add game status into the canvas
+        ctx.font="20px Georgia";
+        ctx.textAlign="center";
+        ctx.fillStyle = 'black';
+        ctx.fillText(infoText,253,570);
+        //show score in right top corner, positive score is green, negative(bad) is red
+        ctx.font="20px Georgia";
+        ctx.textAlign="center";
+        if(winCounter>=lostCounter) ctx.fillStyle = 'LawnGreen';
+        else ctx.fillStyle = 'red';
+        ctx.fillText("Win/Lost score: "+winCounter+"/"+lostCounter,400,80);
         renderEntities();
     }
 
@@ -192,15 +220,22 @@ var Engine = (function(global) {
      */
     function reset() {
         // noop
-        if (player.status == "win") {
-            console.log("WIN");
-        }else if(player.status == "lost"){
-            console.log("LOST");
-        }else if(player.status =="collision"){
-            console.log("LOST because of collision");
+        //Base on the player.status swith, if player win or lost
+        switch(player.status){
+        case 'win':
+            infoText = "WIN!";
+            winCounter += 1;
+            break;
+        case 'lost':
+            infoText = "LOST - you went off screen! Game restarted";
+            lostCounter += 1;
+            break;
+        case 'collision':
+            infoText = "LOST - because of collision! Game restarted";
+            lostCounter += 1;
+            break;
         };
         player.reset();
-        console.log('game reset');
     }
 
     /* Go ahead and load all of the images we know we're going to need to
