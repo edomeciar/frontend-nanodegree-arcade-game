@@ -53,16 +53,22 @@ Player.prototype.render = function(){
 Player.prototype.handleInput = function(pKey){
     switch(pKey){
         case 'left':
-            this.x = this.x - 101;
+            if(this.x>0){
+                this.x = this.x - 101;
+            }
             break;
         case 'right':
-            this.x = this.x + 101;
+            if(this.x<404){
+                this.x = this.x + 101;
+            }
             break;
         case 'up':
             this.y = this.y - 83;
             break;
         case 'down':
-            this.y = this.y + 83;
+            if(this.y<293){
+                this.y = this.y + 83;
+            }
             break;
     }
 }
