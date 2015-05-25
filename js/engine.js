@@ -23,8 +23,10 @@ var Engine = (function(global) {
         win = global.window,
         canvas = doc.createElement('canvas'),
         ctx = canvas.getContext('2d'),
+        //add counter for win and lsot
         winCounter = 0,
         lostCounter = 0,
+        //add variable to store info text for player
         infoText = "Game started!",
         lastTime;
 
@@ -42,6 +44,7 @@ var Engine = (function(global) {
          * would be the same for everyone (regardless of how fast their
          * computer is) - hurray time!
          */
+         //write infoText for the first time (Game started)
         ctx.font="20px Georgia";
         ctx.textAlign="center";
         ctx.fillText(infoText,253,100);
@@ -67,7 +70,7 @@ var Engine = (function(global) {
 
 
         win.requestAnimationFrame(main);
-    };
+    }
 
     /* This function does some initial setup that should only occur once,
      * particularly setting the lastTime variable that is required for the
@@ -90,17 +93,21 @@ var Engine = (function(global) {
      */
     function update(dt) {
         updateEntities(dt);
+        //call function to check player and enemies for colision
         checkCollisions();
     }
 
     function checkCollisions(){
+        //loop trought all enemies
         allEnemies.forEach(function(enemy) {
+            //calculate different beetween players x and enemmys x
             var diff = player.x - enemy.x;
+            //compare position of player with enemie
             if ((diff > -75 && diff < 75) && enemy.y == player.y) {
-                console.log("diff:"+diff+" e.y:"+enemy.y+" p.y:"+player.y);
+                //colision found, set status to "colision" and call reset function
                 player.status = "collision";
                 reset();
-            };
+            }
         });
     }
 
@@ -125,26 +132,28 @@ var Engine = (function(global) {
             }
             else{
                 timeForAnother = false;
-            };
-            //If enemy is of screan/canvas, It's removed from allEnemies
+            }
+            //If enemy is of screan/canvas, It's removed from allEnemies array
             if(enemy.x > 500){
                 allEnemies.splice(index,1);
-            };
+            }
         });
         //I don't want to have more than 10 enemies in screan.
         if (allEnemies.length < 10 && timeForAnother) {
+            //if less than 10 enemies and timeForAnother is true, create a new enemy
             var new_enemy = new Enemy();
+            //set x of new enemy to 0
             new_enemy.x = 0;
+            //base on the random number from 1 to 3, set starting y position fo new enemy (42 or 125 or 208)
             new_enemy.y = Math.floor((Math.random() * 3) + 1) * 83 -41;
-            console.log("New enemy starts on "+new_enemy.y);
+            //add new enemy into to allEnemies array
             allEnemies.push(new_enemy);
-        };
+        }
         //player.update function return true/false
         //if return false, it's time for reset game.
         if(!player.update()){
             reset();
         }
-
     }
 
     /* This function initially draws the "game level", it will then call
@@ -226,15 +235,13 @@ var Engine = (function(global) {
             infoText = "WIN!";
             winCounter += 1;
             break;
-        case 'lost':
-            infoText = "LOST - you went off screen! Game restarted";
-            lostCounter += 1;
-            break;
         case 'collision':
             infoText = "LOST - because of collision! Game restarted";
             lostCounter += 1;
             break;
-        };
+        default:
+            break;
+        }
         player.reset();
     }
 

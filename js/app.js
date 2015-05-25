@@ -5,10 +5,10 @@ var Enemy = function() {
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.x;
-    this.y;
+    this.x = 0;
+    this.y = 0;
     this.sprite = 'images/enemy-bug.png';
-}
+};
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
@@ -16,68 +16,70 @@ Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
-    //console.log("Enemy x:"+this.x+" y:"+this.y);
+    //multiplay dt by 70, this will make player movements more natural (not so fast, not so slow)
     this.x += Math.floor(dt*70);
-}
+};
 
 // Draw the enemy on the screen, required method for game
 Enemy.prototype.render = function() {
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 var Player = function(){
     this.sprite = 'images/char-cat-girl.png';
-    this.x;
-    this.y;
-    this.status;
-}
+    this.x = 202;
+    this.y = 374;
+    this.status = "Ready to play!";
+};
 
 
 Player.prototype.update = function(dt){
-    //console.log("Player x:"+this.x+" y:"+this.y);
-    //check if player is of screan
-    if (this.x <= -1 || this.x >= 505 || this.y >= 375) {
-        this.status = "lost";
-        return false;
     //check if player win
-    } else if(this.y <= 0 ){
+    if (this.y <= 0 ) {
         this.status = "win";
         return false;
-    }else return true
-}
+    } else {
+        this.status = "still trying :-D";
+        return true;
+    }
+};
 
 Player.prototype.render = function(){
     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-}
+};
 
 Player.prototype.handleInput = function(pKey){
     switch(pKey){
         case 'left':
+            //check, if player can move to left
             if(this.x>0){
                 this.x = this.x - 101;
             }
             break;
         case 'right':
+            //check, if player cna move to right
             if(this.x<404){
                 this.x = this.x + 101;
             }
             break;
         case 'up':
+            //no check for moving up is nessesary, if player reach water, he will win.
             this.y = this.y - 83;
             break;
         case 'down':
+            //check, if user can move down
             if(this.y<293){
                 this.y = this.y + 83;
             }
             break;
     }
-}
+};
 
 Player.prototype.reset = function(){
     //set player to start position.
-    this.x =202;
-    this.y =374;
-}
+    this.x = 202;
+    this.y = 374;
+};
 
 var allEnemies = [];
 var player = new Player();
